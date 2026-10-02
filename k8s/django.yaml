@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: prithvi7773/django-blog:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_DB
+              value: blogdb
+            - name: POSTGRES_USER
+              value: bloguser
+            - name: POSTGRES_PASSWORD
+              value: blogpassword
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_PORT
+              value: "5432"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django
+spec:
+  selector:
+    app: django
+  ports:
+    - port: 8000
+      targetPort: 8000
